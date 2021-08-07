@@ -1,0 +1,79 @@
+#include <Arduino.h>
+
+TaskHandle_t Task1 = NULL;
+TaskHandle_t Task2 = NULL;
+TaskHandle_t Task3 = NULL;
+TaskHandle_t Task4 = NULL;
+
+void f4_Task(void *pvParam);
+void f3_Task(void *pvParam);
+void f2_Task(void *pvParam);
+void f1_Task(void *pvParam);
+
+void setup()
+{
+  Serial.begin(115200);
+  //delay(2000);
+  xTaskCreatePinnedToCore(f1_Task, "func1_Task", 1000, NULL, 5, &Task1, 0);
+  xTaskCreatePinnedToCore(f2_Task, "func2_Task", 1000, NULL, 4, &Task2, 0);
+  xTaskCreatePinnedToCore(f3_Task, "func3_Task", 1000, NULL, 3, &Task3, 0);
+  xTaskCreatePinnedToCore(f4_Task, "func4_Task", 1000, NULL, 2, &Task4, 0);
+}
+
+void loop()
+{
+  Serial.println("main loop.");
+}
+
+void f4_Task(void *pvParam)
+{
+  vTaskDelay(500);
+  /* Serial.println(String("Hello from TASK4 , Priority is : ") + uxTaskPriorityGet(Task4));
+  int newPriority = 0;
+  Serial.println(String("NOW WE CHANGE PRIORITY OF TASK4 TO BE : ") + newPriority );      
+  vTaskPrioritySet(Task4,newPriority);
+  
+  Serial.println(String("Hello again from TASK4 , then delete TASK4 !"));
+  vTaskDelete(NULL); */
+  Serial.println("Hello From Task#4");
+  vTaskDelete(Task4);
+}
+
+void f3_Task(void *pvParam)
+{
+  vTaskDelay(500);
+  /* Serial.println(String("Hello from TASK3 , then Suspend TASK2 & TASK3 !"));
+  vTaskSuspend(Task2); 
+  vTaskSuspend(NULL);       
+
+  Serial.println(String("Hello again from TASK3 , then delete TASK3 !"));
+  vTaskDelete(NULL); */
+  Serial.println("Hello From Task#3");
+  vTaskDelete(Task3);
+}
+
+void f2_Task(void *pvParam)
+{
+  vTaskDelay(500);
+  /* Serial.println(String("Hello from TASK2 , then Resume TASK3 !"));
+  vTaskResume(Task3);       
+
+  Serial.println(String("Hello again from TASK2 , then delete TASK2 !"));
+  vTaskDelete(Task2); */
+  Serial.println("Hello From Task#2");
+  vTaskDelete(Task2);
+}
+
+void f1_Task(void *pvParam)
+{
+  /* Serial.println(String("Hello from TASK1 , then Resume TASK2 !"));
+  vTaskResume(Task2);       
+
+  Serial.println(String("Hello again from TASK1 , then delete TASK1 !"));
+  vTaskDelete(NULL); */
+  Serial.println("Hello From Task#1");
+  while (true)
+  {
+  }
+  vTaskDelete(Task1);
+}
