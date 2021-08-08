@@ -14,6 +14,7 @@ void f1_Task(void *pvParam);
 void setup()
 {
   Serial.begin(115200);
+  esp_task_wdt_init(4, true);
   pinMode(LED_BUILTIN, OUTPUT);
 
   for (int i = 0; i <= 10; i++)
@@ -25,18 +26,19 @@ void setup()
   }
 
   //delay(2000);
-  xTaskCreatePinnedToCore(f1_Task, "func1_Task", 1000, NULL, 5, &Task1, 0);
+  xTaskCreatePinnedToCore(f1_Task, "func1_Task", 1000, NULL, 2, &Task1, 1);
   xTaskCreatePinnedToCore(f2_Task, "func2_Task", 1000, NULL, 4, &Task2, 0);
   xTaskCreatePinnedToCore(f3_Task, "func3_Task", 1000, NULL, 3, &Task3, 0);
-  xTaskCreatePinnedToCore(f4_Task, "func4_Task", 1000, NULL, 2, &Task4, 0);
-
-  esp_task_wdt_init(3, true); 
-  esp_task_wdt_add(NULL);               
+  xTaskCreatePinnedToCore(f4_Task, "func4_Task", 1000, NULL, 1, &Task4, 0);
 }
 
 void loop()
 {
   Serial.println("main loop.");
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(50);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(50);
 }
 
 void f4_Task(void *pvParam)
@@ -80,6 +82,7 @@ void f2_Task(void *pvParam)
 
 void f1_Task(void *pvParam)
 {
+  vTaskDelay(500);
   /* Serial.println(String("Hello from TASK1 , then Resume TASK2 !"));
   vTaskResume(Task2);       
 
@@ -89,7 +92,8 @@ void f1_Task(void *pvParam)
 
   while (true)
   {
-    // Serial.println("f1 task");
+    Serial.println("f1 task");
+    vTaskDelay(1);
   }
 
   vTaskDelete(Task1);
