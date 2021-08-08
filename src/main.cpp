@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <esp_task_wdt.h>
 
 TaskHandle_t Task1 = NULL;
 TaskHandle_t Task2 = NULL;
@@ -13,11 +14,24 @@ void f1_Task(void *pvParam);
 void setup()
 {
   Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  for (int i = 0; i <= 10; i++)
+  {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(50);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(50);
+  }
+
   //delay(2000);
   xTaskCreatePinnedToCore(f1_Task, "func1_Task", 1000, NULL, 5, &Task1, 0);
   xTaskCreatePinnedToCore(f2_Task, "func2_Task", 1000, NULL, 4, &Task2, 0);
   xTaskCreatePinnedToCore(f3_Task, "func3_Task", 1000, NULL, 3, &Task3, 0);
   xTaskCreatePinnedToCore(f4_Task, "func4_Task", 1000, NULL, 2, &Task4, 0);
+
+  esp_task_wdt_init(3, true); 
+  esp_task_wdt_add(NULL);               
 }
 
 void loop()
@@ -72,8 +86,11 @@ void f1_Task(void *pvParam)
   Serial.println(String("Hello again from TASK1 , then delete TASK1 !"));
   vTaskDelete(NULL); */
   Serial.println("Hello From Task#1");
+
   while (true)
   {
+    // Serial.println("f1 task");
   }
+
   vTaskDelete(Task1);
 }
