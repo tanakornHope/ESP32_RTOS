@@ -26,19 +26,20 @@ void setup()
   }
 
   //delay(2000);
-  xTaskCreatePinnedToCore(f1_Task, "func1_Task", 1000, NULL, 2, &Task1, 1);
-  xTaskCreatePinnedToCore(f2_Task, "func2_Task", 1000, NULL, 4, &Task2, 0);
+  xTaskCreatePinnedToCore(f1_Task, "func1_Task", 1000, NULL, 5, &Task1, 0);
+  xTaskCreatePinnedToCore(f2_Task, "func2_Task", 1000, NULL, 2, &Task2, 0);
   xTaskCreatePinnedToCore(f3_Task, "func3_Task", 1000, NULL, 3, &Task3, 0);
-  xTaskCreatePinnedToCore(f4_Task, "func4_Task", 1000, NULL, 1, &Task4, 0);
+  xTaskCreatePinnedToCore(f4_Task, "func4_Task", 1000, NULL, 4, &Task4, 0);
 }
 
 void loop()
 {
+  // loop task run at core1.
   Serial.println("main loop.");
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(50);
+  /* digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
   digitalWrite(LED_BUILTIN, LOW);
-  delay(50);
+  delay(500); */
 }
 
 void f4_Task(void *pvParam)
@@ -93,7 +94,7 @@ void f1_Task(void *pvParam)
   while (true)
   {
     Serial.println("f1 task");
-    vTaskDelay(1);
+    // vTaskDelay(1);
   }
 
   vTaskDelete(Task1);
